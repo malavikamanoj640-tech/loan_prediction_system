@@ -78,12 +78,36 @@ input_data = input_data[[
 # -----------------------------
 # Prediction
 # -----------------------------
+# -----------------------------
+# Encode Categorical Columns
+# -----------------------------
+
+categorical_cols = ["Gender","Married","Education","Self_Employed","Property_Area"]
+
+for col in categorical_cols:
+    input_data[col] = encoder[col].transform(input_data[col])
+
+# -----------------------------
+# Match Model Feature Order
+# -----------------------------
+
+expected_features = model.get_booster().feature_names
+
+for col in expected_features:
+    if col not in input_data.columns:
+        input_data[col] = 0
+
+input_data = input_data[expected_features]
+
+# -----------------------------
+# Prediction
+# -----------------------------
 
 if st.button("Predict Loan Status"):
 
     prediction = model.predict(input_data)
 
     if prediction[0] == 1:
-        st.success("✅ Loan Approved")
+        st.success("Loan Approved ✅")
     else:
-        st.error("❌ Loan Not Approved")
+        st.error("Loan Not Approved ❌")
