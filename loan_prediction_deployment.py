@@ -12,17 +12,21 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load trained model and encoders
+# -----------------------------
+# Load Model and Encoder
+# -----------------------------
 model = joblib.load("Loan_prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_Loan_prediction.pkl")
 
+# -----------------------------
+# Title
+# -----------------------------
 st.title("🏦 Loan Prediction System")
 st.write("Enter Applicant Details")
 
 # -----------------------------
 # User Inputs
 # -----------------------------
-
 gender = st.selectbox("Gender", ["Male", "Female"])
 married = st.selectbox("Married", ["Yes", "No"])
 education = st.selectbox("Education", ["Graduate", "Not Graduate"])
@@ -35,9 +39,8 @@ loan_amount_term = st.number_input("Loan Amount Term", min_value=0)
 credit_history = st.selectbox("Credit History", [0, 1])
 
 # -----------------------------
-# Create Input DataFrame
+# Create DataFrame
 # -----------------------------
-
 input_data = pd.DataFrame({
     "Gender":[gender],
     "Married":[married],
@@ -53,44 +56,17 @@ input_data = pd.DataFrame({
 # -----------------------------
 # Encode Categorical Columns
 # -----------------------------
-
 categorical_cols = ["Gender","Married","Education","Self_Employed","Property_Area"]
 
 for col in categorical_cols:
-    input_data[col] = encoder[col].transform(input_data[col])
-
-# -----------------------------
-# Ensure Correct Column Order
-# -----------------------------
-
-input_data = input_data[[
-    "Gender",
-    "Married",
-    "Education",
-    "Self_Employed",
-    "ApplicantIncome",
-    "CoapplicantIncome",
-    "Loan_Amount_Term",
-    "Credit_History",
-    "Property_Area"
-]]
-
-# -----------------------------
-# Prediction
-# -----------------------------
-# -----------------------------
-# Encode Categorical Columns
-# -----------------------------
-
-categorical_cols = ["Gender","Married","Education","Self_Employed","Property_Area"]
-
-for col in categorical_cols:
-    input_data[col] = encoder[col].transform(input_data[col])
+    if input_data[col][0] in encoder[col].classes_:
+        input_data[col] = encoder[col].transform(input_data[col])
+    else:
+        input_data[col] = 0
 
 # -----------------------------
 # Match Model Feature Order
 # -----------------------------
-
 expected_features = model.get_booster().feature_names
 
 for col in expected_features:
@@ -102,12 +78,11 @@ input_data = input_data[expected_features]
 # -----------------------------
 # Prediction
 # -----------------------------
-
 if st.button("Predict Loan Status"):
 
     prediction = model.predict(input_data)
 
     if prediction[0] == 1:
-        st.success("Loan Approved ✅")
+        st.success("✅ Loan Approved")
     else:
-        st.error("Loan Not Approved ❌")
+        st.error("❌ Loan Not Approved")
