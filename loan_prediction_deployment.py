@@ -33,9 +33,9 @@ education = st.selectbox("Education", ["Graduate", "Not Graduate"])
 self_employed = st.selectbox("Self Employed", ["Yes", "No"])
 property_area = st.selectbox("Property Area", ["Urban", "Semiurban", "Rural"])
 
-applicant_income = st.number_input("Applicant Income", min_value=0)
-coapplicant_income = st.number_input("Coapplicant Income", min_value=0)
-loan_amount_term = st.number_input("Loan Amount Term", min_value=0)
+applicant_income = st.number_input("Applicant Income", min_value=0, value=5000)
+coapplicant_income = st.number_input("Coapplicant Income", min_value=0, value=2000)
+loan_amount_term = st.number_input("Loan Amount Term", min_value=0, value=360)
 credit_history = st.selectbox("Credit History", [0, 1])
 
 # -----------------------------
