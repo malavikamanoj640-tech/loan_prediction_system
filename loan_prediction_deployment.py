@@ -78,6 +78,7 @@ input_data = input_data[expected_features]
 # -----------------------------
 # Prediction
 # -----------------------------
+st.write("Prediction value:", prediction)
 if st.button("Predict Loan Status"):
 
     prediction = model.predict(input_data)
