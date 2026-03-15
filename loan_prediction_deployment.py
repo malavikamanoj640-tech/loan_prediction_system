@@ -7,13 +7,15 @@ Original file is located at
     https://colab.research.google.com/drive/1eprOoMU8H-ey84nBkpQmDD_nyk8-PBxQ
 """
 
+
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
 
 # Load model and encoder
-model = joblib.load("loan_prediction_xgbr_model.pkl")
+model = joblib.load("Loan_prediction_xgb_model (1).pkl")
 encoder = joblib.load("label_encoder_Loan_prediction.pkl")
 
 st.title("Loan Prediction App")
