@@ -15,7 +15,7 @@ import numpy as np
 import joblib
 
 # Load model and encoder
-model = joblib.load("Loan_prediction_xgb_model (1).pkl")
+model = joblib.load("Loan_prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_Loan_prediction.pkl")
 
 st.title("Loan Prediction App")
