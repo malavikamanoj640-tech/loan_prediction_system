@@ -19,7 +19,6 @@ model = joblib.load("Loan_prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_Loan_prediction.pkl")
 
 st.title("Loan Prediction App")
-
 st.write("Enter Applicant Details")
 
 # Inputs
@@ -47,12 +46,16 @@ input_data = pd.DataFrame({
     "Credit_History":[credit_history]
 })
 
-# Encode categorical variables
-input_encoded = encoder.transform(input_data)
+# Encode categorical columns
+input_data["Gender"] = encoder["Gender"].transform(input_data["Gender"])
+input_data["Married"] = encoder["Married"].transform(input_data["Married"])
+input_data["Education"] = encoder["Education"].transform(input_data["Education"])
+input_data["Self_Employed"] = encoder["Self_Employed"].transform(input_data["Self_Employed"])
+input_data["Property_Area"] = encoder["Property_Area"].transform(input_data["Property_Area"])
 
 # Prediction
 if st.button("Predict Loan Status"):
-    prediction = model.predict(input_encoded)
+    prediction = model.predict(input_data)
 
     if prediction[0] == 1:
         st.success("Loan Approved ✅")
