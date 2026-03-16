@@ -8,81 +8,54 @@ Original file is located at
 """
 
 
+
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
 
-# -----------------------------
-# Load Model and Encoder
-# -----------------------------
+# Load model and encoder
 model = joblib.load("Loan_prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_Loan_prediction.pkl")
 
-# -----------------------------
-# Title
-# -----------------------------
-st.title("🏦 Loan Prediction System")
+
+st.title("Loan Prediction App")
+
 st.write("Enter Applicant Details")
 
-# -----------------------------
-# User Inputs
-# -----------------------------
+# Inputs
 gender = st.selectbox("Gender", ["Male", "Female"])
 married = st.selectbox("Married", ["Yes", "No"])
 education = st.selectbox("Education", ["Graduate", "Not Graduate"])
 self_employed = st.selectbox("Self Employed", ["Yes", "No"])
 property_area = st.selectbox("Property Area", ["Urban", "Semiurban", "Rural"])
 
-applicant_income = st.number_input("Applicant Income", min_value=0, value=5000)
-coapplicant_income = st.number_input("Coapplicant Income", min_value=0, value=2000)
-loan_amount_term = st.number_input("Loan Amount Term", min_value=0, value=360)
-credit_history = st.selectbox("Credit History", [0, 1])
+applicant_income = st.number_input("Applicant Income")
+coapplicant_income = st.number_input("Coapplicant Income")
+loan_amount_term = st.number_input("Loan Amount Term")
+credit_history = st.selectbox("Credit History", [0,1])
 
-# -----------------------------
-# Create DataFrame
-# -----------------------------
+# Create dataframe
 input_data = pd.DataFrame({
     "Gender":[gender],
     "Married":[married],
     "Education":[education],
     "Self_Employed":[self_employed],
+    "Property_Area":[property_area],
     "ApplicantIncome":[applicant_income],
     "CoapplicantIncome":[coapplicant_income],
     "Loan_Amount_Term":[loan_amount_term],
-    "Credit_History":[credit_history],
-    "Property_Area":[property_area]
+    "Credit_History":[credit_history]
 })
 
-# -----------------------------
-# Encode Categorical Columns
-# -----------------------------
-categorical_cols = ["Gender","Married","Education","Self_Employed","Property_Area"]
+# Encode categorical variables
+input_encoded = encoder.transform(input_data)
 
-for col in categorical_cols:
-    if input_data[col][0] in encoder[col].classes_:
-        input_data[col] = encoder[col].transform(input_data[col])
-    else:
-        input_data[col] = 0
-
-# -----------------------------
-# Match Model Feature Order
-# -----------------------------
-expected_features = model.get_booster().feature_names
-
-for col in expected_features:
-    if col not in input_data.columns:
-        input_data[col] = 0
-
-input_data = input_data[expected_features]
-
-# -----------------------------
 # Prediction
-# -----------------------------
 if st.button("Predict Loan Status"):
-
-    prediction = model.predict(input_data)
+    prediction = model.predict(input_encoded)
 
     if prediction[0] == 1:
-        st.success("✅ Loan Approved")
+        st.success("Loan Approved ✅")
     else:
-        st.error("❌ Loan Not Approved")
+        st.error("Loan Not Approved ❌")
