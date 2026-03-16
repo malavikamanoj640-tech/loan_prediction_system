@@ -19,7 +19,6 @@ encoder = joblib.load("label_encoder_Loan_prediction.pkl")
 
 st.title("Loan Status prediction model")
 
-loan_id = st.text_input("Enter Loan ID")
 gender = st.selectbox("Select Gender",encoder["Gender"].classes_)
 
 married = st.selectbox("Marital Status", encoder["Married"].classes_)
